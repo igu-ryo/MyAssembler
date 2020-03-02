@@ -3,10 +3,10 @@
 
 void main(int argc, char *argv[]){
     char line[30];
-    int i;
     parser_construct(argv);
-    for (i = 0; i < 4; i++){
-        advance();
+    while (1){
+        if (!advance()) break;
+        if (commandType(now_command) == A_COMMAND) printf("%s", now_command);
     }
     fclose(f);
     return;
