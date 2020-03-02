@@ -11,14 +11,14 @@ enum {
 };
 
 enum {
-    null,
     M,
     D,
     MD,
     A,
     AM,
     AD,
-    AMD
+    AMD,
+    null
 };
 
 enum {
@@ -53,7 +53,6 @@ enum {
 };
 
 enum {
-    null,
     JGT,
     JEQ,
     JGE,
@@ -66,8 +65,9 @@ enum {
 void parser_construct(char *argv[]);
 int advance();
 int commandType(char now_command[]);
-int dest(char c_command[]);
-int comp(char c_command[]);
+int p_dest(char c_command[]);
+int p_comp(char c_command[]);
+int p_jump(char c_command[]);
 
 extern FILE *f;
 extern char now_command[200];

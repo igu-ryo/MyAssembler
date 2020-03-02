@@ -15,21 +15,34 @@ void parser_construct(char *argv[]){
 }
 
 int advance(){
+    char command[200];
+    int i = 0, j = 0;
+
     do{
-        if (fgets(now_command, 200, f) == NULL) return 0;
-    } while ((now_command[0] == '/' && now_command[1] == '/') || (now_command[0] == CR && now_command[1] == LF));
+        if (fgets(command, 200, f) == NULL) return 0;
+    } while ((command[0] == '/' && command[1] == '/') || (command[0] == CR && command[1] == LF));
+
+    while (command[i] != '\0'){
+        if (command[i] != ' ') now_command[j++] = command[i];
+        i++;
+    }
 
     return 1;
 }
 
 int commandType(char now_command[]){
     if (now_command[0] == '@') return A_COMMAND;
-    else if (now_command[1] == '=') return C_COMMAND;
     else if (now_command[0] == '(') return L_COMMAND;
+    else return C_COMMAND;
 }
 
-int dest(char c_command[]){
-    if (c_command[0] == 'A'){
+int p_dest(char c_command[]){
+    int i = 0;
+
+    while (c_command[i] != '=' || c_command[i] != '\0') i++;
+
+    if (c_command[i] == '\0') return null;
+    else if (c_command[0] == 'A'){
         if (c_command[1] == 'M'){
             if (c_command[2] == 'D') return AMD;
             else return AM;
@@ -39,13 +52,14 @@ int dest(char c_command[]){
         if (c_command[1] == 'D') return MD;
         else return M;
     } else if (c_command[0] == 'D') return D;
-    else return null;
 }
 
-int comp(char c_command[]){
-    int i;
-    for (i = 0; c_command[i] == '='; i++);
-    i++;
+int p_comp(char c_command[]){
+    int i = 0;
+    while (c_command[i] != '=' || c_command[i] != '\0') i++;
+
+    if (c_command[i] == '\0') i = 0;
+    else i++;
 
     if (c_command[i] == '0') return z;
     else if (c_command[i] == '1') return o;
@@ -63,6 +77,48 @@ int comp(char c_command[]){
             if (c_command[i+2] == '1') return dpo;
             else if (c_command[i+2] == 'A') return dpa;
             else if (c_command[i+2] == 'M') return dpm;
+        } else if (c_command[i+1] == '-'){
+            if (c_command[i+2] == '1') return dmo;
+            else if (c_command[i+2] == 'A') return dma;
+            else if (c_command[i+2] == 'M') return dmm;
+        } else if (c_command[i+1] == '&'){
+            if (c_command[i+2] == 'A') return danda;
+            else if (c_command[i+2] == 'M') return dandm;
+        } else if (c_command[i+1] == '|'){
+            if (c_command[i+2] == 'A') return dora;
+            else if (c_command[i+2] == 'M') return dorm;
+        } 
+    } else if (c_command[i] == 'A'){
+        if (c_command[i+1] == '+'){
+            if (c_command[i+2] == '1') return apo;
+        } else if (c_command[i+1] == '-'){
+            if (c_command[i+2] == '1') return amo;
+            else if (c_command[i+2] == 'D') return amd;
+        }
+    } else if (c_command[i] == 'M'){
+        if (c_command[i+1] == '+'){
+            if (c_command[i+2] == '1') return mpo;
+        } else if (c_command[i+1] == '-'){
+            if (c_command[i+2] == '1') return mmo;
+            else if (c_command[i+2] == 'D') return mmd;
         }
     }
+}
+
+int p_jump(char c_command[]){
+    int i = 0;
+    while (c_command[i] != ';' || c_command[i] != '\0') i++;
+
+    if (c_command[i] == '\0') return null;
+    else i++;
+
+    if (c_command[i+1] == 'G'){
+        if (c_command[i+2] == 'T') return JGT;
+        else if (c_command[i+2] == 'E') return JGE;
+    } else if (c_command[i+1] == 'L'){
+        if (c_command[i+2] == 'T') return JLT;
+        else if (c_command[i+2] == 'E') return JLE;
+    } else if (c_command[i+1] == 'E' && c_command[i+2] == 'Q') return JEQ;
+    else if (c_command[i+1] == 'N' && c_command[i+2] == 'E') return JNE;
+    else if (c_command[i+1] == 'M' && c_command[i+2] == 'P') return JMP;
 }
