@@ -46,13 +46,18 @@ void c_assemble(char now_command[]){
     c_dest(now_command);
 
     for (i = 0; i < 3; i++){
-        bi[j] = b_dest[i];
+        bi[j] = 1;
         j++;
     }
 
     c_comp(now_command);
     for (i = 0; i < 7; i++){
         bi[j] = b_comp[i];
+        j++;
+    }
+
+    for (i = 0; i < 3; i++){
+        bi[j] = b_dest[i];
         j++;
     }
 

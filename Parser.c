@@ -4,7 +4,7 @@
 #include "Parser.h"
 
 FILE *f;
-char now_command[200];
+char now_command[100];
 
 void parser_construct(char *argv[]){
     char asm_file[20];
@@ -15,17 +15,19 @@ void parser_construct(char *argv[]){
 }
 
 int advance(){
-    char command[200];
+    char command[100];
     int i = 0, j = 0;
 
     do{
-        if (fgets(command, 200, f) == NULL) return 0;
+        if (fgets(command, 100, f) == NULL) return 0;
     } while ((command[0] == '/' && command[1] == '/') || (command[0] == CR && command[1] == LF));
 
-    while (command[i] != LF){
+    while (command[i] != CR){
         if (command[i] != ' ') now_command[j++] = command[i];
         i++;
     }
+
+    for (i = j; i < 100; i++) now_command[i] = '\0';
 
     return 1;
 }
@@ -37,21 +39,29 @@ int commandType(char now_command[]){
 }
 
 void symbol(char al_command[]){
-    int i = 0;
+    int i = 0, j;
+    char char_num[5] = {'\0'};
+    int num, quot, surplus;
 
     if (commandType(al_command) == A_COMMAND){
         i++;
-        while (al_command[i] != CR){
-            bi[i] = al_command[i] - '0';
-            printf("%d\n", bi[i]);
+
+        while (al_command[i] != '\0'){
+            char_num[i-1] = al_command[i];
             i++;
         }
+
+        num = atoi(char_num);
     } else if (commandType(al_command) == L_COMMAND){
         i++;
-        while (al_command[i] != ')'){
-            bi[i] = al_command[i] - '0';
-            i++;
-        }
+        // todo
+    }
+
+    quot = num;
+    for (i = 0, j = 15; i < 16; i++, j--){
+        surplus = quot % 2;
+        quot = quot / 2;
+        bi[j] = surplus;
     }
 
     return;
@@ -60,9 +70,9 @@ void symbol(char al_command[]){
 int p_dest(char c_command[]){
     int i = 0;
 
-    while (c_command[i] != '=' && c_command[i] != CR) i++;
+    while (c_command[i] != '=' && c_command[i] != '\0') i++;
 
-    if (c_command[i] == CR) return null;
+    if (c_command[i] == '\0') return null;
     else if (c_command[0] == 'A'){
         if (c_command[1] == 'M'){
             if (c_command[2] == 'D') return AMD;
@@ -77,9 +87,9 @@ int p_dest(char c_command[]){
 
 int p_comp(char c_command[]){
     int i = 0;
-    while (c_command[i] != '=' && c_command[i] != CR) i++;
+    while (c_command[i] != '=' && c_command[i] != '\0') i++;
 
-    if (c_command[i] == CR) i = 0;
+    if (c_command[i] == '\0') i = 0;
     else i++;
 
     if (c_command[i] == '0') return z;
@@ -108,29 +118,29 @@ int p_comp(char c_command[]){
         } else if (c_command[i+1] == '|'){
             if (c_command[i+2] == 'A') return dora;
             else if (c_command[i+2] == 'M') return dorm;
-        } 
+        } else return d;
     } else if (c_command[i] == 'A'){
         if (c_command[i+1] == '+'){
             if (c_command[i+2] == '1') return apo;
         } else if (c_command[i+1] == '-'){
             if (c_command[i+2] == '1') return amo;
             else if (c_command[i+2] == 'D') return amd;
-        }
+        } else return a;
     } else if (c_command[i] == 'M'){
         if (c_command[i+1] == '+'){
             if (c_command[i+2] == '1') return mpo;
         } else if (c_command[i+1] == '-'){
             if (c_command[i+2] == '1') return mmo;
             else if (c_command[i+2] == 'D') return mmd;
-        }
+        } else return m;
     }
 }
 
 int p_jump(char c_command[]){
     int i = 0;
-    while (c_command[i] != ';' && c_command[i] != CR) i++;
+    while (c_command[i] != ';' && c_command[i] != '\0') i++;
 
-    if (c_command[i] == CR) return null;
+    if (c_command[i] == '\0') return null;
     else i++;
 
     if (c_command[i+1] == 'G'){

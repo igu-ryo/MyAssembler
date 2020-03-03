@@ -71,7 +71,7 @@ int p_comp(char c_command[]);
 int p_jump(char c_command[]);
 
 extern FILE *f;
-extern char now_command[200];
+extern char now_command[100];
 extern int bi[16];
 
 #endif
