@@ -65,11 +65,13 @@ enum {
 void parser_construct(char *argv[]);
 int advance();
 int commandType(char now_command[]);
+void symbol(char al_command[]);
 int p_dest(char c_command[]);
 int p_comp(char c_command[]);
 int p_jump(char c_command[]);
 
 extern FILE *f;
 extern char now_command[200];
+extern int bi[16];
 
 #endif

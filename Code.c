@@ -342,7 +342,7 @@ void c_comp(char c_command[]){
     }
 }
 
-void c_jump(char c_command){
+void c_jump(char c_command[]){
     switch (p_jump(c_command))
     {
     case null:

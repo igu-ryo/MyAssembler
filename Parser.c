@@ -22,7 +22,7 @@ int advance(){
         if (fgets(command, 200, f) == NULL) return 0;
     } while ((command[0] == '/' && command[1] == '/') || (command[0] == CR && command[1] == LF));
 
-    while (command[i] != '\0'){
+    while (command[i] != LF){
         if (command[i] != ' ') now_command[j++] = command[i];
         i++;
     }
@@ -36,12 +36,33 @@ int commandType(char now_command[]){
     else return C_COMMAND;
 }
 
+void symbol(char al_command[]){
+    int i = 0;
+
+    if (commandType(al_command) == A_COMMAND){
+        i++;
+        while (al_command[i] != CR){
+            bi[i] = al_command[i] - '0';
+            printf("%d\n", bi[i]);
+            i++;
+        }
+    } else if (commandType(al_command) == L_COMMAND){
+        i++;
+        while (al_command[i] != ')'){
+            bi[i] = al_command[i] - '0';
+            i++;
+        }
+    }
+
+    return;
+}
+
 int p_dest(char c_command[]){
     int i = 0;
 
-    while (c_command[i] != '=' || c_command[i] != '\0') i++;
+    while (c_command[i] != '=' && c_command[i] != CR) i++;
 
-    if (c_command[i] == '\0') return null;
+    if (c_command[i] == CR) return null;
     else if (c_command[0] == 'A'){
         if (c_command[1] == 'M'){
             if (c_command[2] == 'D') return AMD;
@@ -56,9 +77,9 @@ int p_dest(char c_command[]){
 
 int p_comp(char c_command[]){
     int i = 0;
-    while (c_command[i] != '=' || c_command[i] != '\0') i++;
+    while (c_command[i] != '=' && c_command[i] != CR) i++;
 
-    if (c_command[i] == '\0') i = 0;
+    if (c_command[i] == CR) i = 0;
     else i++;
 
     if (c_command[i] == '0') return z;
@@ -107,9 +128,9 @@ int p_comp(char c_command[]){
 
 int p_jump(char c_command[]){
     int i = 0;
-    while (c_command[i] != ';' || c_command[i] != '\0') i++;
+    while (c_command[i] != ';' && c_command[i] != CR) i++;
 
-    if (c_command[i] == '\0') return null;
+    if (c_command[i] == CR) return null;
     else i++;
 
     if (c_command[i+1] == 'G'){
