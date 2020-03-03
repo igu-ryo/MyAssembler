@@ -6,5 +6,9 @@ typedef struct{
     int address;
 } symbol_adress;
 
+extern symbol_adress symbol_table[50];
+
+void symboltable_construct();
+void addEntry(char symbol[], int address);
 
 #endif

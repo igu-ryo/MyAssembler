@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include "Parser.h"
+#include "SymbolTable.h"
 
 FILE *f;
 char now_command[100];
@@ -40,18 +41,19 @@ int commandType(char now_command[]){
 
 void symbol(char al_command[]){
     int i = 0, j;
-    char char_num[5] = {'\0'};
+    char char_num[20] = {'\0'};
     int num, quot, surplus;
 
-    if (commandType(al_command) == A_COMMAND){
+    i++;
+
+    while (al_command[i] != '\0'){
+        char_num[i-1] = al_command[i];
         i++;
+    }
 
-        while (al_command[i] != '\0'){
-            char_num[i-1] = al_command[i];
-            i++;
-        }
-
-        num = atoi(char_num);
+    if (commandType(al_command) == A_COMMAND){
+        if (char_num[0] >= '0' && char_num[0] <= '9') num = atoi(char_num);
+        // todo
     } else if (commandType(al_command) == L_COMMAND){
         i++;
         // todo
