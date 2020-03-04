@@ -16,19 +16,26 @@ void parser_construct(char *argv[]){
 }
 
 int advance(){
-    char command[100];
-    int i = 0, j = 0;
+    char raw_command[100];
+    int i, j;
 
     do{
-        if (fgets(command, 100, f) == NULL) return 0;
-    } while ((command[0] == '/' && command[1] == '/') || (command[0] == CR && command[1] == LF));
+        i = 0;
+        j = 0;
+        
+        if (fgets(raw_command, 99, f) == NULL) return 0;
 
-    while (command[i] != CR){
-        if (command[i] != ' ') now_command[j++] = command[i];
+        while (raw_command[i] != CR){
+        if (raw_command[i] != ' ') now_command[j++] = raw_command[i];
         i++;
-    }
+        }
 
-    for (i = j; i < 100; i++) now_command[i] = '\0';
+        for (i = j; i < 100; i++) now_command[i] = '\0';
+
+        for (i = 0; (now_command[i] != '/' || now_command[i+1] != '/') && i != 98; i++);
+
+        for (i = i; i < 100; i++) now_command[i] = '\0';
+    } while (now_command[0] == '\0');
 
     return 1;
 }
@@ -39,31 +46,38 @@ int commandType(char now_command[]){
     else return C_COMMAND;
 }
 
-void symbol(char al_command[]){
-    int i = 0, j;
+void symbol(char al_command[], int loop2flg){
+    int i = 1;
+    int j, num, quot, surplus;
     char char_num[20] = {'\0'};
-    int num, quot, surplus;
-
-    i++;
-
     while (al_command[i] != '\0'){
         char_num[i-1] = al_command[i];
         i++;
     }
 
-    if (commandType(al_command) == A_COMMAND){
-        if (char_num[0] >= '0' && char_num[0] <= '9') num = atoi(char_num);
-        // todo
-    } else if (commandType(al_command) == L_COMMAND){
-        i++;
-        // todo
-    }
+    switch (loop2flg)
+    {
+    case 0:
+        addEntry(char_num, pc);
+        break;
+    
+    case 1:
+        
 
-    quot = num;
-    for (i = 0, j = 15; i < 16; i++, j--){
-        surplus = quot % 2;
-        quot = quot / 2;
-        bi[j] = surplus;
+        if (commandType(al_command) == A_COMMAND){
+            if (char_num[0] >= '0' && char_num[0] <= '9') num = atoi(char_num);
+            else if (contains(char_num)) num = getAddress(char_num);
+            else addEntry(char_num, start_address + added_size);
+        }
+
+        quot = num;
+        for (i = 0, j = 15; i < 16; i++, j--){
+            surplus = quot % 2;
+            quot = quot / 2;
+            bi[j] = surplus;
+        }
+
+        break;
     }
 
     return;

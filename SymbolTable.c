@@ -5,6 +5,7 @@
 
 symbol_adress symbol_table[50];
 int symbol_size = 0;
+int added_size = 0;
 int start_address = 16;
 
 void symboltable_construct(){
@@ -103,5 +104,22 @@ void symboltable_construct(){
 }
 
 void addEntry(char symbol[], int address){
+    strcpy(symbol_table[symbol_size].symbol, symbol);
+    symbol_table[symbol_size].address = address;
+    symbol_size++;
+    added_size++;
+}
 
+int contains(char symbol[]){
+    int i;
+
+    for (i = 0; i < symbol_size; i++) if (!strcmp(symbol, symbol_table[i].symbol)) return 1;
+
+    return 0;
+}
+
+int getAddress(char symbol[]){
+    int i;
+
+    for (i = 0; i < symbol_size; i++) if (!strcmp(symbol, symbol_table[i].symbol)) return symbol_table[i].address;
 }
