@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "Parser.h"
 #include "Code.h"
+#include "SymbolTable.h"
 
 void c_assemble(char now_command[]);
 
@@ -18,6 +19,7 @@ void main(int argc, char *argv[]){
     sprintf(hack_file_name, "%s.hack", hack_file_name);
 
     parser_construct(argv);
+    symboltable_construct();
     
     while (1){
         if (!advance()) break;

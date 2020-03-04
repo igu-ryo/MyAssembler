@@ -50,7 +50,8 @@ void symbol(char al_command[], int loop2flg){
     int i = 1;
     int j, num, quot, surplus;
     char char_num[20] = {'\0'};
-    while (al_command[i] != '\0'){
+    char symbol[19] = {'\0'};
+    while (al_command[i] != '\0' && al_command[i] != ')'){
         char_num[i-1] = al_command[i];
         i++;
     }
@@ -58,25 +59,26 @@ void symbol(char al_command[], int loop2flg){
     switch (loop2flg)
     {
     case 0:
-        addEntry(char_num, pc);
+        addEntry(char_num, pc, loop2flg);
         break;
     
     case 1:
-        
-
         if (commandType(al_command) == A_COMMAND){
             if (char_num[0] >= '0' && char_num[0] <= '9') num = atoi(char_num);
             else if (contains(char_num)) num = getAddress(char_num);
-            else addEntry(char_num, start_address + added_size);
+            else {
+                addEntry(char_num, start_address + added_size, loop2flg);
+                num = getAddress(char_num);
+            }
         }
-
+        
         quot = num;
         for (i = 0, j = 15; i < 16; i++, j--){
             surplus = quot % 2;
             quot = quot / 2;
             bi[j] = surplus;
         }
-
+        
         break;
     }
 

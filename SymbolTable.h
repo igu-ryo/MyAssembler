@@ -12,7 +12,7 @@ extern int added_size;
 extern int start_address;
 
 void symboltable_construct();
-void addEntry(char symbol[], int address);
+void addEntry(char symbol[], int address, int loop2flg);
 int contains(char symbol[]);
 int getAddress(char symbol[]);
 

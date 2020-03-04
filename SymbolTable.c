@@ -103,11 +103,11 @@ void symboltable_construct(){
     
 }
 
-void addEntry(char symbol[], int address){
+void addEntry(char symbol[], int address, int loop2flg){
     strcpy(symbol_table[symbol_size].symbol, symbol);
     symbol_table[symbol_size].address = address;
     symbol_size++;
-    added_size++;
+    if (loop2flg) added_size++;
 }
 
 int contains(char symbol[]){
@@ -121,5 +121,5 @@ int contains(char symbol[]){
 int getAddress(char symbol[]){
     int i;
 
-    for (i = 0; i < symbol_size; i++) if (!strcmp(symbol, symbol_table[i].symbol)) return symbol_table[i].address;
+    for (i = 0; i < symbol_size; i++) if (strcmp(symbol, symbol_table[i].symbol) == 0) return symbol_table[i].address;
 }
